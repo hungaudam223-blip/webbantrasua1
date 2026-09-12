@@ -186,20 +186,6 @@
             padding: 20px;
         }
 
-        /* CSS CHO CHATBOX AI */
-        .chat-widget { position: fixed; bottom: 30px; right: 30px; z-index: 1000; }
-        .chat-btn { background-color: #d2691e; color: white; width: 60px; height: 60px; border-radius: 50%; display: flex; justify-content: center; align-items: center; font-size: 24px; cursor: pointer; box-shadow: 0 5px 15px rgba(210, 105, 30, 0.4); transition: transform 0.3s; }
-        .chat-btn:hover { transform: scale(1.1); }
-        .chat-window { position: absolute; bottom: 80px; right: 0; width: 350px; height: 450px; background-color: #fff; border-radius: 15px; box-shadow: 0 10px 30px rgba(0,0,0,0.15); display: none; flex-direction: column; overflow: hidden; border: 1px solid #eee; }
-        .chat-header { background: linear-gradient(135deg, #d2691e, #ff8c00); color: white; padding: 15px; font-weight: bold; display: flex; justify-content: space-between; align-items: center; }
-        .chat-header i.close-btn { cursor: pointer; }
-        .chat-body { flex: 1; padding: 15px; overflow-y: auto; background-color: #fafafa; }
-        .message { margin-bottom: 15px; max-width: 80%; padding: 10px 15px; border-radius: 15px; font-size: 14px; }
-        .message.ai { background-color: #e9ecef; color: #333; align-self: flex-start; border-bottom-left-radius: 0; }
-        .message.user { background-color: #d2691e; color: white; align-self: flex-end; border-bottom-right-radius: 0; margin-left: auto; }
-        .chat-input { display: flex; padding: 10px; background-color: #fff; border-top: 1px solid #eee; }
-        .chat-input input { flex: 1; padding: 10px; border: 1px solid #ddd; border-radius: 20px; outline: none; }
-        .chat-input button { background-color: transparent; border: none; color: #d2691e; font-size: 20px; margin-left: 10px; cursor: pointer; }
     </style>
 </head>
 <body>
@@ -251,27 +237,7 @@
         <p>&copy; 2026 Boba Tea. Bản quyền thuộc về Tiệm Trà Sữa Boba.</p>
     </footer>
 
-    <!-- Chatbox AI -->
-    <div class="chat-widget">
-        <div class="chat-window" id="chatWindow">
-            <div class="chat-header">
-                <span><i class="fa-solid fa-robot"></i> AI Trợ Lý Boba</span>
-                <i class="fa-solid fa-xmark close-btn" onclick="toggleChat()"></i>
-            </div>
-            <div class="chat-body" id="chatBody">
-                <div class="message ai">Xin chào! Mình là trợ lý AI của Boba Tea. Bạn muốn tư vấn chọn vị trà sữa nào hôm nay ạ? 🧋</div>
-            </div>
-            <div class="chat-input">
-                <input type="text" id="userInput" placeholder="Nhập tin nhắn..." onkeypress="handleKeyPress(event)">
-                <button onclick="sendMessage()"><i class="fa-solid fa-paper-plane"></i></button>
-            </div>
-        </div>
-        <div class="chat-btn" onclick="toggleChat()">
-            <i class="fa-solid fa-comment-dots"></i>
-        </div>
-    </div>
-
-    <!-- Script xử lý CSDL và Chat -->
+    <!-- Script xử lý CSDL -->
     <script>
         // CSDL Mô phỏng với đường dẫn ảnh trỏ tới 1.jpg, 2.jpg, 3.jpg, 4.jpg
         const database = {
@@ -280,8 +246,7 @@
                 { id: 2, name: "Trà Sữa Thái Xanh Khúc Bạch", price: "40.000đ", image: "2.jpg" },
                 { id: 3, name: "Trà Khoai Môn Trân Châu Trắng", price: "48.000đ", image: "3.jpg" },
                 { id: 4, name: "Trà Dâu Tây Kem Cheese", price: "55.000đ", image: "4.jpg" }
-            ],
-            chats: [] 
+            ]
         };
 
         // Hàm render sản phẩm ra ngoài
@@ -310,40 +275,15 @@
 
         window.onload = renderProducts;
 
-        // Xử lý Chat AI
-        function toggleChat() {
-            const chatWindow = document.getElementById('chatWindow');
-            chatWindow.style.display = (chatWindow.style.display === 'none' || chatWindow.style.display === '') ? 'flex' : 'none';
-        }
-
-        function handleKeyPress(e) {
-            if (e.key === 'Enter') sendMessage();
-        }
-
-        function sendMessage() {
-            const input = document.getElementById('userInput');
-            const message = input.value.trim();
-            if (!message) return;
-
-            database.chats.push({ sender: 'user', text: message });
-            appendMessage('user', message);
-            input.value = '';
-
-            setTimeout(() => {
-                const aiReply = `Đã nhận yêu cầu: "${message}". Bạn muốn chọn size M hay size L?`;
-                database.chats.push({ sender: 'ai', text: aiReply });
-                appendMessage('ai', aiReply);
-            }, 1000);
-        }
-
-        function appendMessage(sender, text) {
-            const chatBody = document.getElementById('chatBody');
-            const msgDiv = document.createElement('div');
-            msgDiv.className = `message ${sender}`;
-            msgDiv.innerText = text;
-            chatBody.appendChild(msgDiv);
-            chatBody.scrollTop = chatBody.scrollHeight;
-        }
     </script>
+
+    <script src="https://www.gstatic.com/dialogflow-console/fast/messenger/bootstrap.js?v=1"></script>
+    <df-messenger
+        intent="WELCOME"
+        chat-title="BanTraSua"
+        agent-id="c74ad0e6-5c45-461d-8bfc-7614c1fc787a"
+        language-code="en">
+    </df-messenger>
+    
 </body>
 </html>
